@@ -32,6 +32,13 @@ import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/context';
 import { spacing, radii, fonts } from '@/constants/tokens';
 import { useWalletStore } from '@/store/wallet';
+import {
+  WelcomeIllustration,
+  ImportWalletIllustration,
+  CurrenciesIllustration,
+  NotificationsIllustration,
+  CompleteIllustration,
+} from '@/components/illustrations';
 
 const { width, height } = Dimensions.get('window');
 
@@ -107,17 +114,12 @@ export default function OnboardingScreen() {
       style={styles.stepContainer}
     >
       <View style={styles.welcomeContent}>
-        {/* Logo/Brand Mark */}
+        {/* Custom Illustration */}
         <Animated.View 
           entering={FadeInDown.delay(200).duration(600)}
-          style={styles.logoContainer}
+          style={styles.illustrationWrapper}
         >
-          <LinearGradient
-            colors={['#1A1A1A', '#2D2D2D']}
-            style={styles.logoGradient}
-          >
-            <Text style={styles.logoText}>K</Text>
-          </LinearGradient>
+          <WelcomeIllustration />
         </Animated.View>
 
         {/* Brand Name */}
@@ -173,16 +175,24 @@ export default function OnboardingScreen() {
       exiting={SlideOutLeft.duration(300)}
       style={styles.stepContainer}
     >
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.importContent}
+      <ScrollView 
+        style={styles.importScrollView}
+        contentContainerStyle={styles.importScrollContent}
+        showsVerticalScrollIndicator={false}
       >
+        {/* Custom Illustration */}
+        <Animated.View 
+          entering={FadeInDown.delay(50).duration(400)}
+          style={styles.illustrationWrapperImport}
+        >
+          <ImportWalletIllustration />
+        </Animated.View>
+
         <Animated.Text 
           entering={FadeInDown.delay(100).duration(400)}
           style={styles.stepTitle}
         >
-          Import Your{'\n'}
-          <Text style={styles.stepTitleAccent}>Wallet</Text>
+          Import Your <Text style={styles.stepTitleAccent}>Wallet</Text>
         </Animated.Text>
 
         <Animated.Text 
@@ -230,7 +240,7 @@ export default function OnboardingScreen() {
             <Ionicons name="chevron-forward" size={20} color={colors.textTertiary} />
           </TouchableOpacity>
         </Animated.View>
-      </KeyboardAvoidingView>
+      </ScrollView>
 
       {/* Skip for demo */}
       <TouchableOpacity style={styles.skipButton} onPress={handleNext}>
@@ -340,21 +350,19 @@ export default function OnboardingScreen() {
       style={styles.stepContainer}
     >
       <View style={styles.notificationsContent}>
+        {/* Custom Illustration */}
         <Animated.View 
           entering={FadeInDown.delay(100).duration(400)}
-          style={styles.notificationIllustration}
+          style={styles.illustrationWrapperSmall}
         >
-          <View style={styles.bellContainer}>
-            <Ionicons name="notifications" size={64} color={colors.primary} />
-          </View>
+          <NotificationsIllustration />
         </Animated.View>
 
         <Animated.Text 
           entering={FadeInDown.delay(200).duration(400)}
           style={styles.stepTitle}
         >
-          Stay in the{'\n'}
-          <Text style={styles.stepTitleAccent}>Loop</Text>
+          Stay in the <Text style={styles.stepTitleAccent}>Loop</Text>
         </Animated.Text>
 
         <Animated.Text 
@@ -411,17 +419,12 @@ export default function OnboardingScreen() {
       style={styles.stepContainer}
     >
       <View style={styles.completeContent}>
-        {/* Success Animation */}
+        {/* Custom Illustration */}
         <Animated.View 
           entering={FadeInDown.delay(200).duration(600).springify()}
-          style={styles.successCircle}
+          style={styles.illustrationWrapperSmall}
         >
-          <LinearGradient
-            colors={[colors.primary, colors.primaryDark]}
-            style={styles.successGradient}
-          >
-            <Ionicons name="checkmark" size={48} color="white" />
-          </LinearGradient>
+          <CompleteIllustration />
         </Animated.View>
 
         <Animated.Text 
@@ -563,27 +566,23 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleShe
     justifyContent: 'space-between',
   },
   
+  // Illustrations
+  illustrationWrapper: {
+    marginBottom: spacing.md,
+  },
+  illustrationWrapperSmall: {
+    marginBottom: spacing.sm,
+  },
+  illustrationWrapperImport: {
+    marginBottom: spacing.sm,
+  },
+  
   // Welcome Screen
   welcomeContent: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: spacing.xl,
-  },
-  logoContainer: {
-    marginBottom: spacing['2xl'],
-  },
-  logoGradient: {
-    width: 100,
-    height: 100,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoText: {
-    fontSize: 48,
-    fontFamily: fonts.displayBold,
-    color: 'white',
   },
   brandName: {
     fontSize: 56,
@@ -652,6 +651,14 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleShe
   },
 
   // Import Screen
+  importScrollView: {
+    flex: 1,
+  },
+  importScrollContent: {
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xl,
+  },
   importContent: {
     flex: 1,
     paddingHorizontal: spacing.xl,
@@ -833,17 +840,6 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleShe
     paddingHorizontal: spacing.xl,
     paddingTop: spacing['4xl'],
   },
-  notificationIllustration: {
-    marginBottom: spacing['2xl'],
-  },
-  bellContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: colors.primary + '15',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   benefitsList: {
     width: '100%',
     marginTop: spacing['2xl'],
@@ -874,16 +870,6 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleShe
     alignItems: 'center',
     paddingHorizontal: spacing.xl,
     paddingTop: spacing['4xl'],
-  },
-  successCircle: {
-    marginBottom: spacing['2xl'],
-  },
-  successGradient: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   completeTitle: {
     fontSize: 32,

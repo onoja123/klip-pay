@@ -13,8 +13,9 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '@/context';
 import { fonts, spacing, radii } from '@/constants/tokens';
 import { Button } from '@/components/ui';
-import { DebitCard } from '@/components/features';
+import { DebitCard, CardStack, CardCustomizeModal, CardCustomization } from '@/components/features';
 import { useWalletStore } from '@/store/wallet';
+import { mockCards } from '@/data/mock';
 
 const AnimatedView = Animated.View;
 
@@ -24,8 +25,21 @@ export default function CardsScreen() {
   const router = useRouter();
   const { debitCard, assets } = useWalletStore();
   const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
+  const [showAddCardModal, setShowAddCardModal] = useState(false);
+  const [showCustomizeModal, setShowCustomizeModal] = useState(false);
 
   const hasCard = debitCard && debitCard.status !== 'pending';
+  const hasMultipleCards = mockCards.length > 1;
+
+  const handleAddCard = (customization: CardCustomization) => {
+    console.log('New card created:', customization);
+    // TODO: Add card to state/backend
+  };
+
+  const handleCustomizeCard = (customization: CardCustomization) => {
+    console.log('Card customized:', customization);
+    // TODO: Update card in state/backend
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -37,21 +51,32 @@ export default function CardsScreen() {
         {/* Header */}
         <AnimatedView entering={FadeInDown.delay(100).duration(400)} style={styles.header}>
           <Text style={styles.title}>Cards</Text>
-          <TouchableOpacity style={styles.headerButton}>
+          <TouchableOpacity 
+            style={styles.headerButton}
+            onPress={() => setShowAddCardModal(true)}
+          >
             <Ionicons name="add-outline" size={24} color={colors.text} />
           </TouchableOpacity>
         </AnimatedView>
 
-        {/* Card Preview */}
+        {/* Card Preview - Use CardStack if multiple cards, otherwise single DebitCard */}
         <AnimatedView entering={FadeInDown.delay(150).duration(400)} style={styles.cardSection}>
-          <DebitCard
-            last4={debitCard?.last4}
-            expiryMonth={debitCard?.expiryMonth}
-            expiryYear={debitCard?.expiryYear}
-            status={debitCard?.status}
-            showDetails={hasCard ?? false}
-            onPress={() => !hasCard && router.push('/card-onboarding')}
-          />
+          {hasCard && hasMultipleCards ? (
+            <CardStack
+              cards={mockCards}
+              onCardPress={() => {}}
+            />
+          ) : (
+            <DebitCard
+              last4={debitCard?.last4}
+              expiryMonth={debitCard?.expiryMonth}
+              expiryYear={debitCard?.expiryYear}
+              cvv={debitCard?.cvv}
+              status={debitCard?.status}
+              showDetails={hasCard ?? false}
+              onPress={() => !hasCard && router.push('/card-onboarding')}
+            />
+          )}
         </AnimatedView>
 
         {hasCard ? (
@@ -69,6 +94,15 @@ export default function CardsScreen() {
                   <Ionicons name="eye-outline" size={20} color={colors.text} />
                 </View>
                 <Text style={styles.actionLabel}>Details</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.actionButton}
+                onPress={() => setShowCustomizeModal(true)}
+              >
+                <View style={styles.actionIcon}>
+                  <Ionicons name="color-palette-outline" size={20} color={colors.text} />
+                </View>
+                <Text style={styles.actionLabel}>Customize</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionButton}>
                 <View style={styles.actionIcon}>
@@ -122,6 +156,26 @@ export default function CardsScreen() {
           </AnimatedView>
         )}
       </ScrollView>
+
+      {/* Add Card Modal */}
+      <CardCustomizeModal
+        visible={showAddCardModal}
+        onClose={() => setShowAddCardModal(false)}
+        onSave={handleAddCard}
+        mode="add"
+      />
+
+      {/* Customize Card Modal */}
+      <CardCustomizeModal
+        visible={showCustomizeModal}
+        onClose={() => setShowCustomizeModal(false)}
+        onSave={handleCustomizeCard}
+        mode="customize"
+        initialData={{
+          name: 'My Card',
+          color: ['#2A2A2A', '#1A1A1A', '#0F0F0F'],
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -161,8 +215,8 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleShe
   },
   actionsRow: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    gap: spacing['3xl'],
+    justifyContent: 'space-around',
+    paddingHorizontal: spacing.md,
     paddingVertical: spacing.xl,
   },
   actionButton: {

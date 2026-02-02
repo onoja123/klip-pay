@@ -199,6 +199,7 @@ export const mockTransactions: Transaction[] = [
 export const mockDebitCard: DebitCard = {
   id: '1',
   last4: '4892',
+  cvv: '847',
   brand: 'mastercard',
   fundingWallet: 'solana',
   status: 'active',
@@ -207,6 +208,43 @@ export const mockDebitCard: DebitCard = {
   spentThisMonth: 342.50,
   limit: 5000,
 };
+
+// Mock Multiple Cards (for CardStack)
+export const mockCards = [
+  {
+    id: '1',
+    last4: '4892',
+    cvv: '847',
+    expiryMonth: 12,
+    expiryYear: 2028,
+    brand: 'mastercard' as const,
+    type: 'debit' as const,
+    color: ['#2A2A2A', '#1A1A1A', '#0F0F0F'] as [string, string, string],
+    status: 'active' as const,
+  },
+  {
+    id: '2',
+    last4: '7231',
+    cvv: '392',
+    expiryMonth: 6,
+    expiryYear: 2027,
+    brand: 'mastercard' as const,
+    type: 'virtual' as const,
+    color: ['#C9A227', '#9A7B0A', '#6B5400'] as [string, string, string],
+    status: 'active' as const,
+  },
+  {
+    id: '3',
+    last4: '5518',
+    cvv: '156',
+    expiryMonth: 3,
+    expiryYear: 2029,
+    brand: 'visa' as const,
+    type: 'debit' as const,
+    color: ['#6B7280', '#4B5563', '#374151'] as [string, string, string],
+    status: 'frozen' as const,
+  },
+];
 
 // Mock DeFi Positions
 export const mockDeFiPositions: DeFiPosition[] = [

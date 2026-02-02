@@ -60,6 +60,7 @@ export interface Transaction {
 export interface DebitCard {
   id: string;
   last4: string;
+  cvv?: string;
   brand: 'mastercard' | 'visa';
   fundingWallet: Chain;
   status: 'active' | 'frozen' | 'pending';

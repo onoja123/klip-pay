@@ -1,20 +1,25 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
+  interpolate,
+  runOnJS,
 } from 'react-native-reanimated';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { colors, typography, radii, spacing, shadows } from '@/constants/tokens';
 
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface DebitCardProps {
   last4?: string;
   expiryMonth?: number;
   expiryYear?: number;
+  cvv?: string;
   status?: 'active' | 'frozen' | 'pending';
   onPress?: () => void;
   showDetails?: boolean;
@@ -24,42 +29,85 @@ export function DebitCard({
   last4 = '••••',
   expiryMonth,
   expiryYear,
+  cvv = '•••',
   status = 'pending',
   onPress,
   showDetails = false,
 }: DebitCardProps) {
+  const rotateY = useSharedValue(0);
   const scale = useSharedValue(1);
+  const [isFlipped, setIsFlipped] = useState(false);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  const handlePressIn = () => {
-    if (onPress) {
-      scale.value = withSpring(0.98, { damping: 15, stiffness: 400 });
-    }
+  const triggerHaptic = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15, stiffness: 400 });
+  const flipCard = () => {
+    'worklet';
+    const toValue = rotateY.value === 0 ? 180 : 0;
+    rotateY.value = withSpring(toValue, { damping: 15, stiffness: 80 });
+    runOnJS(triggerHaptic)();
+    runOnJS(setIsFlipped)(toValue === 180);
   };
 
-  const handlePress = () => {
-    if (onPress) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      onPress();
-    }
-  };
+  // Swipe gesture to flip
+  const swipeGesture = Gesture.Pan()
+    .activeOffsetX([-20, 20])
+    .onEnd((event) => {
+      if (Math.abs(event.velocityX) > 300 || Math.abs(event.translationX) > 50) {
+        flipCard();
+      }
+    });
 
-  return (
-    <AnimatedTouchable
-      onPress={handlePress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      activeOpacity={1}
-      disabled={!onPress}
-      style={[styles.container, animatedStyle]}
-    >
+  // Tap gesture to flip (when card has details)
+  const tapGesture = Gesture.Tap()
+    .onStart(() => {
+      if (showDetails) {
+        scale.value = withSpring(0.98, { damping: 15, stiffness: 400 });
+      }
+    })
+    .onEnd(() => {
+      scale.value = withSpring(1, { damping: 15, stiffness: 400 });
+      if (showDetails) {
+        flipCard();
+      } else if (onPress) {
+        runOnJS(onPress)();
+        runOnJS(triggerHaptic)();
+      }
+    });
+
+  const composedGesture = showDetails 
+    ? Gesture.Race(swipeGesture, tapGesture)
+    : tapGesture;
+
+  // Front card animation
+  const frontAnimatedStyle = useAnimatedStyle(() => {
+    const rotate = interpolate(rotateY.value, [0, 180], [0, 180]);
+    return {
+      transform: [
+        { perspective: 1000 },
+        { rotateY: `${rotate}deg` },
+        { scale: scale.value },
+      ],
+      backfaceVisibility: 'hidden',
+    };
+  });
+
+  // Back card animation
+  const backAnimatedStyle = useAnimatedStyle(() => {
+    const rotate = interpolate(rotateY.value, [0, 180], [180, 360]);
+    return {
+      transform: [
+        { perspective: 1000 },
+        { rotateY: `${rotate}deg` },
+        { scale: scale.value },
+      ],
+      backfaceVisibility: 'hidden',
+    };
+  });
+
+  const CardFront = () => (
+    <Animated.View style={[styles.container, frontAnimatedStyle]}>
       <LinearGradient
         colors={['#2A2A2A', '#1A1A1A', '#0F0F0F']}
         start={{ x: 0, y: 0 }}
@@ -115,19 +163,97 @@ export function DebitCard({
             </View>
           </View>
         </View>
+
+        {/* Swipe hint */}
+        {showDetails && !isFlipped && (
+          <View style={styles.swipeHint}>
+            <Text style={styles.swipeHintText}>Swipe to see back</Text>
+          </View>
+        )}
       </LinearGradient>
-    </AnimatedTouchable>
+    </Animated.View>
+  );
+
+  const CardBack = () => (
+    <Animated.View style={[styles.container, styles.cardBack, backAnimatedStyle]}>
+      <LinearGradient
+        colors={['#2A2A2A', '#1A1A1A', '#0F0F0F']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradient}
+      >
+        {/* Magnetic stripe */}
+        <View style={styles.magneticStripe} />
+
+        {/* Signature strip with CVV */}
+        <View style={styles.signatureSection}>
+          <View style={styles.signatureStrip}>
+            <View style={styles.signatureLines}>
+              {[...Array(4)].map((_, i) => (
+                <View key={i} style={styles.signatureLine} />
+              ))}
+            </View>
+          </View>
+          <View style={styles.cvvContainer}>
+            <Text style={styles.cvvLabel}>CVV</Text>
+            <View style={styles.cvvBox}>
+              <Text style={styles.cvvText}>{cvv}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Additional info */}
+        <View style={styles.backContent}>
+          <Text style={styles.backText}>
+            This card is issued by Klip Financial Services pursuant to a license from Mastercard International.
+          </Text>
+          
+          <View style={styles.backBottomRow}>
+            <Text style={styles.backSmallText}>Customer Service: 1-800-KLIP-PAY</Text>
+            <View style={styles.mastercard}>
+              <View style={[styles.mastercardCircle, styles.mastercardRed]} />
+              <View style={[styles.mastercardCircle, styles.mastercardOrange]} />
+            </View>
+          </View>
+        </View>
+
+        {/* Swipe hint */}
+        {showDetails && isFlipped && (
+          <View style={styles.swipeHint}>
+            <Text style={styles.swipeHintText}>Swipe to see front</Text>
+          </View>
+        )}
+      </LinearGradient>
+    </Animated.View>
+  );
+
+  return (
+    <GestureDetector gesture={composedGesture}>
+      <View style={styles.cardWrapper}>
+        <CardFront />
+        <CardBack />
+      </View>
+    </GestureDetector>
   );
 }
 
 const styles = StyleSheet.create({
+  cardWrapper: {
+    position: 'relative',
+  },
   container: {
     borderRadius: radii.xl,
     overflow: 'hidden',
     ...shadows.lg,
   },
+  cardBack: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
   gradient: {
-    aspectRatio: 1.586, // Standard card ratio
+    aspectRatio: 1.586,
     padding: spacing.xl,
   },
   patternOverlay: {
@@ -179,9 +305,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
   },
-  expiryContainer: {
-    
-  },
+  expiryContainer: {},
   expiryLabel: {
     fontSize: 8,
     color: 'rgba(255,255,255,0.5)',
@@ -216,5 +340,87 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.7)',
     letterSpacing: 0.5,
     marginTop: 32,
+  },
+  swipeHint: {
+    position: 'absolute',
+    bottom: 8,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  swipeHintText: {
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.4)',
+    letterSpacing: 0.5,
+  },
+  // Back of card styles
+  magneticStripe: {
+    position: 'absolute',
+    top: 30,
+    left: 0,
+    right: 0,
+    height: 45,
+    backgroundColor: '#000000',
+  },
+  signatureSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 60,
+    gap: spacing.md,
+  },
+  signatureStrip: {
+    flex: 1,
+    height: 40,
+    backgroundColor: '#E8E8E8',
+    borderRadius: 4,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.sm,
+  },
+  signatureLines: {
+    gap: 6,
+  },
+  signatureLine: {
+    height: 1,
+    backgroundColor: 'rgba(0,0,0,0.15)',
+  },
+  cvvContainer: {
+    alignItems: 'center',
+  },
+  cvvLabel: {
+    fontSize: 8,
+    color: 'rgba(255,255,255,0.5)',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  cvvBox: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: 4,
+  },
+  cvvText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000000',
+    letterSpacing: 2,
+  },
+  backContent: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  backText: {
+    fontSize: 7,
+    color: 'rgba(255,255,255,0.4)',
+    lineHeight: 10,
+    marginBottom: spacing.md,
+  },
+  backBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
+  backSmallText: {
+    fontSize: 8,
+    color: 'rgba(255,255,255,0.5)',
   },
 });
