@@ -11,15 +11,18 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import { colors, typography, spacing, radii } from '@/constants/tokens';
+import { typography, spacing, radii } from '@/constants/tokens';
 import { Button, CryptoIcon } from '@/components/ui';
 import { DebitCard } from '@/components/features';
 import { useWalletStore } from '@/store/wallet';
+import { useTheme } from '@/context';
 
 const AnimatedView = Animated.View;
 
 export default function CardOnboardingScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { assets } = useWalletStore();
   const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
   const [step, setStep] = useState<'intro' | 'select' | 'success'>('intro');
@@ -193,7 +196,7 @@ export default function CardOnboardingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

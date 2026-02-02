@@ -476,31 +476,37 @@ export default function OnboardingScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      {/* Progress Bar */}
+      {/* Header with Back Button and Progress Bar */}
       {step !== 'welcome' && (
-        <Animated.View entering={FadeIn} style={styles.progressContainer}>
-          <View style={styles.progressTrack}>
-            <Animated.View style={[styles.progressFill, progressStyle]} />
-          </View>
-        </Animated.View>
-      )}
+        <Animated.View entering={FadeIn} style={styles.headerContainer}>
+          {/* Back Button */}
+          {step !== 'complete' ? (
+            <TouchableOpacity 
+              style={styles.backButton}
+              onPress={() => {
+                const steps: OnboardingStep[] = ['welcome', 'import', 'currencies', 'notifications', 'complete'];
+                const currentIndex = steps.indexOf(step);
+                if (currentIndex > 0) {
+                  progress.value = withSpring((currentIndex - 1) / (steps.length - 1));
+                  setStep(steps[currentIndex - 1]);
+                }
+              }}
+            >
+              <Ionicons name="arrow-back" size={24} color={colors.text} />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.backButtonPlaceholder} />
+          )}
 
-      {/* Back Button */}
-      {step !== 'welcome' && step !== 'complete' && (
-        <Animated.View entering={FadeIn} style={styles.backButtonContainer}>
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={() => {
-              const steps: OnboardingStep[] = ['welcome', 'import', 'currencies', 'notifications', 'complete'];
-              const currentIndex = steps.indexOf(step);
-              if (currentIndex > 0) {
-                progress.value = withSpring((currentIndex - 1) / (steps.length - 1));
-                setStep(steps[currentIndex - 1]);
-              }
-            }}
-          >
-            <Ionicons name="arrow-back" size={24} color={colors.text} />
-          </TouchableOpacity>
+          {/* Progress Bar */}
+          <View style={styles.progressContainer}>
+            <View style={styles.progressTrack}>
+              <Animated.View style={[styles.progressFill, progressStyle]} />
+            </View>
+          </View>
+
+          {/* Spacer for balance */}
+          <View style={styles.backButtonPlaceholder} />
         </Animated.View>
       )}
 
@@ -519,9 +525,15 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleShe
     flex: 1,
     backgroundColor: colors.background,
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    gap: spacing.md,
+  },
   progressContainer: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.md,
+    flex: 1,
   },
   progressTrack: {
     height: 3,
@@ -534,12 +546,6 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleShe
     backgroundColor: colors.primary,
     borderRadius: radii.full,
   },
-  backButtonContainer: {
-    position: 'absolute',
-    top: 60,
-    left: spacing.lg,
-    zIndex: 10,
-  },
   backButton: {
     width: 44,
     height: 44,
@@ -547,6 +553,10 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleShe
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  backButtonPlaceholder: {
+    width: 44,
+    height: 44,
   },
   stepContainer: {
     flex: 1,
