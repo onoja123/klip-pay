@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,8 @@ import { spacing, radii, fonts } from '@/constants/tokens';
 import { AssetRow, ChipGroup, Skeleton, SkeletonGroup } from '@/components/ui';
 import { PromoCard } from '@/components/features';
 import { useWalletStore } from '@/store/wallet';
+import { useFocusEffect } from '@react-navigation/native';
+import { useOverlay } from '@/components/overlay/useOverlay';
 
 const AnimatedView = Animated.View;
 
@@ -29,6 +31,8 @@ export default function HomeScreen() {
   const { assets, totalBalance, isLoading, refreshData } = useWalletStore();
   const [selectedTab, setSelectedTab] = useState('tokens');
   const [refreshing, setRefreshing] = useState(false);
+  const { start, isOpen } = useOverlay();
+  const overlayStarted = useRef(false);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -58,6 +62,44 @@ export default function HomeScreen() {
     { icon: 'wallet-outline' as const, label: 'Withdraw', route: '/withdraw' },
   ];
 
+  useFocusEffect(
+    useCallback(() => {
+      overlayStarted.current = true;
+      start([
+        {
+          name: 'Home',
+          description:
+            'Your wallet overview and daily balance at a glance.',
+        },
+        {
+          name: 'Card',
+          description: 'Manage and customize your Klip card.',
+        },
+        {
+          name: 'DeFi',
+          description: 'Explore swaps and DeFi opportunities.',
+        },
+        {
+          name: 'Activity',
+          description: 'Track every transaction and update.',
+        },
+        {
+          name: 'Profile',
+          description: 'Manage your account, settings, and preferences.',
+        },
+      ]);
+      return () => {
+        overlayStarted.current = false;
+      };
+    }, [start])
+  );
+
+  useEffect(() => {
+    if (overlayStarted.current && !isOpen) {
+      overlayStarted.current = false;
+    }
+  }, [isOpen]);
+
   const styles = createStyles(colors);
 
   return (
@@ -75,7 +117,10 @@ export default function HomeScreen() {
         }
       >
         {/* Header */}
-        <AnimatedView entering={FadeInDown.delay(100).duration(400)} style={styles.header}>
+        <AnimatedView
+          entering={FadeInDown.delay(100).duration(400)}
+          style={styles.header}
+        >
           <TouchableOpacity style={styles.addressChip}>
             <LinearGradient
               colors={['#E8D5FF', '#FFD5E5']}
@@ -109,7 +154,10 @@ export default function HomeScreen() {
         </AnimatedView>
 
         {/* Balance Section */}
-        <AnimatedView entering={FadeInDown.delay(200).duration(400)} style={styles.balanceSection}>
+        <AnimatedView
+          entering={FadeInDown.delay(200).duration(400)}
+          style={styles.balanceSection}
+        >
           <Text style={styles.balanceLabel}>Total Balance</Text>
           {isLoading ? (
             <Skeleton width={200} height={48} borderRadius={radii.md} />
@@ -123,7 +171,10 @@ export default function HomeScreen() {
         </AnimatedView>
 
         {/* Quick Actions */}
-        <AnimatedView entering={FadeInDown.delay(250).duration(400)} style={styles.quickActions}>
+        <AnimatedView
+          entering={FadeInDown.delay(250).duration(400)}
+          style={styles.quickActions}
+        >
           {quickActions.map((action, index) => (
             <TouchableOpacity
               key={action.label}
@@ -139,7 +190,10 @@ export default function HomeScreen() {
         </AnimatedView>
 
         {/* Promo Card */}
-        <AnimatedView entering={FadeInDown.delay(300).duration(400)} style={styles.promoSection}>
+        <AnimatedView
+          entering={FadeInDown.delay(300).duration(400)}
+          style={styles.promoSection}
+        >
           <PromoCard onPress={() => router.push('/card-onboarding')} />
         </AnimatedView>
 
