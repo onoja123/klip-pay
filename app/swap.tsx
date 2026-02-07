@@ -11,14 +11,17 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import { colors, typography, spacing, radii } from '@/constants/tokens';
+import { typography, spacing, radii, fonts } from '@/constants/tokens';
 import { Button, CryptoIcon, Input } from '@/components/ui';
 import { useWalletStore } from '@/store/wallet';
+import { useTheme } from '@/context';
 
 const AnimatedView = Animated.View;
 
 export default function SwapScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { assets } = useWalletStore();
   const [fromAsset, setFromAsset] = useState(assets[0]);
   const [toAsset, setToAsset] = useState(assets[3]); // USDC
@@ -246,7 +249,7 @@ export default function SwapScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -317,7 +320,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   toAmount: {
-    ...typography.headline,
+    fontSize: 22,
+    fontFamily: fonts.sansSemiBold,
+    letterSpacing: 0,
+    lineHeight: 28,
     color: colors.text,
   },
   balanceRow: {

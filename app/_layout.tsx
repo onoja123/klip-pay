@@ -50,21 +50,21 @@ function RootLayoutNav() {
         <Stack.Screen
           name="send"
           options={{
-            presentation: 'modal',
+            presentation: 'fullScreenModal',
             animation: 'slide_from_bottom',
           }}
         />
         <Stack.Screen
           name="receive"
           options={{
-            presentation: 'modal',
+            presentation: 'fullScreenModal',
             animation: 'slide_from_bottom',
           }}
         />
         <Stack.Screen
           name="swap"
           options={{
-            presentation: 'modal',
+            presentation: 'fullScreenModal',
             animation: 'slide_from_bottom',
           }}
         />
@@ -78,7 +78,7 @@ function RootLayoutNav() {
         <Stack.Screen
           name="withdraw"
           options={{
-            presentation: 'modal',
+            presentation: 'fullScreenModal',
             animation: 'slide_from_bottom',
           }}
         />

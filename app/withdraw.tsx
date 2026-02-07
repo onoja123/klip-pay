@@ -13,9 +13,10 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import { colors, typography, spacing, radii } from '@/constants/tokens';
+import { typography, spacing, radii, fonts } from '@/constants/tokens';
 import { Button, Card, Input, CryptoIcon } from '@/components/ui';
 import { useWalletStore } from '@/store/wallet';
+import { useTheme } from '@/context';
 
 const AnimatedView = Animated.View;
 
@@ -23,6 +24,8 @@ type WithdrawMethod = 'bank' | 'card' | 'paypal';
 
 export default function WithdrawScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { assets } = useWalletStore();
   
   const [step, setStep] = useState<'amount' | 'method' | 'confirm' | 'success'>('amount');
@@ -111,6 +114,8 @@ export default function WithdrawScreen() {
             placeholder="0.00"
             keyboardType="decimal-pad"
             style={styles.amountInput}
+            containerStyle={styles.amountInputContainer}
+            inputContainerStyle={styles.amountInputInner}
           />
         </View>
         <TouchableOpacity 
@@ -319,7 +324,7 @@ export default function WithdrawScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -401,21 +406,40 @@ const styles = StyleSheet.create({
   },
   amountRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'center',
+    gap: spacing.sm,
   },
   currencySymbol: {
-    ...typography.displayLarge,
+    fontSize: 36,
+    fontFamily: fonts.sansSemiBold,
+    letterSpacing: 0,
+    lineHeight: 42,
     color: colors.text,
-    marginRight: spacing.xs,
+    marginRight: spacing.sm,
   },
   amountInput: {
-    ...typography.displayLarge,
+    fontSize: 36,
+    fontFamily: fonts.sansSemiBold,
+    letterSpacing: 0,
+    lineHeight: 42,
     color: colors.text,
-    textAlign: 'center',
-    minWidth: 100,
+    textAlign: 'left',
+    minWidth: 160,
     borderWidth: 0,
     backgroundColor: 'transparent',
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    height: 42,
+  },
+  amountInputContainer: {
+    marginBottom: 0,
+  },
+  amountInputInner: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
   },
   maxButton: {
     paddingHorizontal: spacing.md,

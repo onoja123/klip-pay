@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Share,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -12,14 +13,17 @@ import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import * as Clipboard from 'expo-clipboard';
-import { colors, typography, spacing, radii } from '@/constants/tokens';
+import { typography, spacing, radii } from '@/constants/tokens';
 import { Button, Input, CryptoIcon, ChipGroup } from '@/components/ui';
 import { useWalletStore } from '@/store/wallet';
+import { useTheme } from '@/context';
 
 const AnimatedView = Animated.View;
 
 export default function ReceiveScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { assets } = useWalletStore();
   const [selectedAsset, setSelectedAsset] = useState(assets[0]);
   const [amount, setAmount] = useState('');
@@ -148,7 +152,7 @@ export default function ReceiveScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -255,7 +259,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   warningSection: {
-    marginTop: 'auto',
+    marginTop: spacing.lg,
     paddingBottom: spacing.xl,
   },
   warningBox: {
@@ -273,6 +277,3 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 });
-
-// Need to import Platform
-import { Platform } from 'react-native';

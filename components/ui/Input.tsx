@@ -16,6 +16,7 @@ interface InputProps extends TextInputProps {
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   containerStyle?: ViewStyle;
+  inputContainerStyle?: ViewStyle;
 }
 
 export function Input({
@@ -24,6 +25,7 @@ export function Input({
   prefix,
   suffix,
   containerStyle,
+  inputContainerStyle,
   style,
   ...props
 }: InputProps) {
@@ -33,7 +35,13 @@ export function Input({
   return (
     <View style={[styles.container, containerStyle]}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[styles.inputContainer, error && { borderColor: colors.error }]}>
+      <View
+        style={[
+          styles.inputContainer,
+          error && { borderColor: colors.error },
+          inputContainerStyle,
+        ]}
+      >
         {prefix && <View style={styles.prefix}>{prefix}</View>}
         <TextInput
           style={[styles.input, style]}
