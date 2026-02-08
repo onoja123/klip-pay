@@ -11,12 +11,9 @@ import { useTheme } from '@/context';
 import { radii, spacing, fonts } from '@/constants/tokens';
 import { Button } from '@/components/ui';
 import { DebitCard } from './DebitCard';
+import type { PromoCardProps } from '@/types/components/features/PromoCard';
 
 const AnimatedView = Animated.View;
-
-interface PromoCardProps {
-  onPress: () => void;
-}
 
 export function PromoCard({ onPress }: PromoCardProps) {
   const { colors } = useTheme();

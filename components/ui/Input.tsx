@@ -4,20 +4,10 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  TextInputProps,
-  ViewStyle,
 } from 'react-native';
 import { useTheme } from '@/context';
 import { radii, spacing, fonts } from '@/constants/tokens';
-
-interface InputProps extends TextInputProps {
-  label?: string;
-  error?: string;
-  prefix?: React.ReactNode;
-  suffix?: React.ReactNode;
-  containerStyle?: ViewStyle;
-  inputContainerStyle?: ViewStyle;
-}
+import type { InputProps } from '@/types/components/ui/Input';
 
 export function Input({
   label,

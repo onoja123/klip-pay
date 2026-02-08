@@ -5,27 +5,13 @@ import {
   Text,
   TouchableOpacity,
   View,
-  LayoutRectangle,
   LayoutChangeEvent,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '@/context';
 import { fonts, radii, spacing } from '@/constants/tokens';
-
-interface AppTourOverlayProps {
-  visible: boolean;
-  step: number;
-  totalSteps: number;
-  title: string;
-  description: string;
-  rect?: LayoutRectangle | null;
-  screenWidth: number;
-  screenHeight: number;
-  onNext: () => void;
-  onSkip: () => void;
-  isLast: boolean;
-}
+import type { AppTourOverlayProps } from '@/types/components/features/AppTourOverlay';
 
 export function AppTourOverlay({
   visible,

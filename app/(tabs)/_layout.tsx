@@ -6,7 +6,8 @@ import { fonts } from '@/constants/tokens';
 import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import { BlurView } from 'expo-blur';
 import type { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
-import { OverlayProvider, type OverlayStepName } from '@/components/overlay/OverlayProvider';
+import { OverlayProvider } from '@/components/overlay/OverlayProvider';
+import type { OverlayStepName } from '@/types/components/overlay/OverlayProvider';
 import { useOverlay } from '@/components/overlay/useOverlay';
 
 function TabBarButton({

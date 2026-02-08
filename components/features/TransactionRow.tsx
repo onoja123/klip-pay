@@ -4,12 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/context';
 import { radii, spacing, fonts } from '@/constants/tokens';
-import { Transaction } from '@/types';
-
-interface TransactionRowProps {
-  transaction: Transaction;
-  onPress?: () => void;
-}
+import type { TransactionRowProps } from '@/types/components/features/TransactionRow';
 
 export function TransactionRow({ transaction, onPress }: TransactionRowProps) {
   const { colors } = useTheme();

@@ -1,58 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-type ThemeMode = 'light' | 'dark' | 'system';
-
-interface ThemeColors {
-  // Core
-  background: string;
-  surface: string;
-  surfaceElevated: string;
-  
-  // Card (dark premium card)
-  card: string;
-  cardGradientStart: string;
-  cardGradientEnd: string;
-  
-  // Primary (green from CTA buttons)
-  primary: string;
-  primaryDark: string;
-  primaryLight: string;
-  
-  // Text
-  text: string;
-  textSecondary: string;
-  textTertiary: string;
-  textInverse: string;
-  
-  // Semantic
-  success: string;
-  successLight: string;
-  error: string;
-  errorLight: string;
-  warning: string;
-  warningLight: string;
-  info: string;
-  infoLight: string;
-  
-  // Borders & Overlays
-  border: string;
-  borderLight: string;
-  overlay: string;
-  overlayLight: string;
-  
-  // Crypto colors
-  solana: string;
-  ethereum: string;
-  bitcoin: string;
-  usdc: string;
-  polygon: string;
-  
-  // Misc
-  shimmer: string;
-  shimmerHighlight: string;
-}
+import type { ThemeColors, ThemeContextType, ThemeMode } from '@/types/context/ThemeContext';
 
 // Light theme colors
 export const lightColors: ThemeColors = {
@@ -139,14 +88,6 @@ export const darkColors: ThemeColors = {
   shimmer: '#1F1F1F',
   shimmerHighlight: '#2A2A2A',
 };
-
-interface ThemeContextType {
-  mode: ThemeMode;
-  isDark: boolean;
-  colors: ThemeColors;
-  setMode: (mode: ThemeMode) => void;
-  toggleTheme: () => void;
-}
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 

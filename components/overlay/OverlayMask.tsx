@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
-  LayoutRectangle,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -18,18 +17,9 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/context';
 import { fonts, radii, spacing } from '@/constants/tokens';
+import type { OverlayMaskProps } from '@/types/components/overlay/OverlayMask';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
-
-interface OverlayMaskProps {
-  visible: boolean;
-  stepName: string;
-  description?: string;
-  rect: LayoutRectangle | null;
-  isLast: boolean;
-  onNext: () => void;
-  onSkip: () => void;
-}
 
 export function OverlayMask({
   visible,

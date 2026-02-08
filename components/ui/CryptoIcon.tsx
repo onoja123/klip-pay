@@ -1,13 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import Svg, { Circle, Path, G, Defs, ClipPath, Rect } from 'react-native-svg';
-import { colors, radii } from '@/constants/tokens';
-
-interface CryptoIconProps {
-  symbol: string;
-  size?: number;
-  color?: string;
-}
+import { colors } from '@/constants/tokens';
+import type { CryptoIconProps } from '@/types/components/ui/CryptoIcon';
 
 export function CryptoIcon({ symbol, size = 40, color }: CryptoIconProps) {
   const iconSize = size * 0.6;

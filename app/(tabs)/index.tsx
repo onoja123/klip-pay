@@ -22,8 +22,10 @@ import { PromoCard } from '@/components/features';
 import { useWalletStore } from '@/store/wallet';
 import { useFocusEffect } from '@react-navigation/native';
 import { useOverlay } from '@/components/overlay/useOverlay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AnimatedView = Animated.View;
+const TAB_TOUR_SEEN_KEY = '@klip_tab_tour_seen';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -64,31 +66,43 @@ export default function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      overlayStarted.current = true;
-      start([
-        {
-          name: 'Home',
-          description:
-            'Your wallet overview and daily balance at a glance.',
-        },
-        {
-          name: 'Card',
-          description: 'Manage and customize your Klip card.',
-        },
-        {
-          name: 'DeFi',
-          description: 'Explore swaps and DeFi opportunities.',
-        },
-        {
-          name: 'Activity',
-          description: 'Track every transaction and update.',
-        },
-        {
-          name: 'Profile',
-          description: 'Manage your account, settings, and preferences.',
-        },
-      ]);
+      let isActive = true;
+      const openTourIfFirstTime = async () => {
+        try {
+          const seen = await AsyncStorage.getItem(TAB_TOUR_SEEN_KEY);
+          if (!isActive || seen) return;
+          overlayStarted.current = true;
+          start([
+            {
+              name: 'Home',
+              description:
+                'Your wallet overview and daily balance at a glance.',
+            },
+            {
+              name: 'Card',
+              description: 'Manage and customize your Klip card.',
+            },
+            {
+              name: 'DeFi',
+              description: 'Explore swaps and DeFi opportunities.',
+            },
+            {
+              name: 'Activity',
+              description: 'Track every transaction and update.',
+            },
+            {
+              name: 'Profile',
+              description: 'Manage your account, settings, and preferences.',
+            },
+          ]);
+          await AsyncStorage.setItem(TAB_TOUR_SEEN_KEY, '1');
+        } catch (error) {
+          // Fail silently to avoid blocking the screen.
+        }
+      };
+      openTourIfFirstTime();
       return () => {
+        isActive = false;
         overlayStarted.current = false;
       };
     }, [start])

@@ -13,7 +13,8 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '@/context';
 import { fonts, spacing, radii } from '@/constants/tokens';
 import { Button } from '@/components/ui';
-import { DebitCard, CardStack, CardCustomizeModal, CardCustomization } from '@/components/features';
+import { DebitCard, CardStack, CardCustomizeModal } from '@/components/features';
+import type { CardCustomization } from '@/components/features';
 import { useWalletStore } from '@/store/wallet';
 import { mockCards } from '@/data/mock';
 

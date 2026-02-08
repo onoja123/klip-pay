@@ -9,16 +9,10 @@ import { TouchableOpacity } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/context';
 import { radii, spacing, fonts } from '@/constants/tokens';
-import { Asset } from '@/types';
 import { CryptoIcon } from './CryptoIcon';
+import type { AssetRowProps } from '@/types/components/ui/AssetRow';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-
-interface AssetRowProps {
-  asset: Asset;
-  onPress?: () => void;
-  showChange?: boolean;
-}
 
 export function AssetRow({ asset, onPress, showChange = true }: AssetRowProps) {
   const { colors } = useTheme();

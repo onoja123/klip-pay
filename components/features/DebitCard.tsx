@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   useAnimatedStyle,
@@ -12,18 +12,7 @@ import Animated, {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { colors, typography, radii, spacing, shadows } from '@/constants/tokens';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-interface DebitCardProps {
-  last4?: string;
-  expiryMonth?: number;
-  expiryYear?: number;
-  cvv?: string;
-  status?: 'active' | 'frozen' | 'pending';
-  onPress?: () => void;
-  showDetails?: boolean;
-}
+import type { DebitCardProps } from '@/types/components/features/DebitCard';
 
 export function DebitCard({
   last4 = '••••',

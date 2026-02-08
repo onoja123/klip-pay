@@ -13,26 +13,10 @@ import Animated, {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { typography, radii, spacing, shadows } from '@/constants/tokens';
+import type { CardData, CardStackProps } from '@/types/components/features/CardStack';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const SWIPE_THRESHOLD = 80;
-
-export interface CardData {
-  id: string;
-  last4: string;
-  cvv?: string;
-  expiryMonth: number;
-  expiryYear: number;
-  brand: 'mastercard' | 'visa';
-  type: 'debit' | 'virtual';
-  color: [string, string, string];
-  status: 'active' | 'frozen' | 'pending';
-}
-
-interface CardStackProps {
-  cards: CardData[];
-  onCardPress?: (card: CardData) => void;
-}
 
 export function CardStack({ cards, onCardPress }: CardStackProps) {
   const [cardOrder, setCardOrder] = useState(cards.map((_, i) => i));

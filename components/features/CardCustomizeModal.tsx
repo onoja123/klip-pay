@@ -17,23 +17,9 @@ import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/context';
 import { fonts, spacing, radii, shadows } from '@/constants/tokens';
 import { Button } from '@/components/ui';
+import type { CardCustomization, CardCustomizeModalProps } from '@/types/components/features/CardCustomizeModal';
 
 const { width } = Dimensions.get('window');
-
-export interface CardCustomization {
-  name: string;
-  color: [string, string, string];
-  type: 'debit' | 'virtual';
-  brand: 'mastercard' | 'visa';
-}
-
-interface CardCustomizeModalProps {
-  visible: boolean;
-  onClose: () => void;
-  onSave: (customization: CardCustomization) => void;
-  mode: 'add' | 'customize';
-  initialData?: Partial<CardCustomization>;
-}
 
 const CARD_COLORS: { name: string; colors: [string, string, string] }[] = [
   { name: 'Midnight', colors: ['#2A2A2A', '#1A1A1A', '#0F0F0F'] },

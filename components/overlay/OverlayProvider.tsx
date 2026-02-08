@@ -1,23 +1,7 @@
 import React, { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LayoutRectangle, StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { OverlayMask } from './OverlayMask';
-
-export type OverlayStepName = 'Home' | 'Card' | 'DeFi' | 'Activity' | 'Profile';
-export interface OverlayStep {
-  name: OverlayStepName;
-  description: string;
-}
-
-interface OverlayContextValue {
-  isOpen: boolean;
-  steps: OverlayStep[];
-  activeIndex: number;
-  start: (steps: OverlayStep[]) => void;
-  next: () => void;
-  skip: () => void;
-  finish: () => void;
-  registerTabRef: (name: OverlayStepName, ref: React.RefObject<TouchableOpacity>) => void;
-}
+import type { OverlayContextValue, OverlayStep, OverlayStepName } from '@/types/components/overlay/OverlayProvider';
 
 export const OverlayContext = createContext<OverlayContextValue | null>(null);
 

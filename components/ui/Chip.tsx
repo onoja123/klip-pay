@@ -4,13 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/context';
 import { radii, spacing, fonts } from '@/constants/tokens';
-
-interface ChipProps {
-  label: string;
-  selected?: boolean;
-  onPress?: () => void;
-  icon?: keyof typeof Ionicons.glyphMap;
-}
+import type { ChipProps, ChipItem, ChipGroupProps } from '@/types/components/ui/Chip';
 
 export function Chip({ label, selected = false, onPress, icon }: ChipProps) {
   const { colors } = useTheme();
@@ -45,24 +39,6 @@ export function Chip({ label, selected = false, onPress, icon }: ChipProps) {
       </Text>
     </TouchableOpacity>
   );
-}
-
-// Support both "chips" format and "options" format for flexibility
-interface ChipItem {
-  label: string;
-  value: string;
-  icon?: keyof typeof Ionicons.glyphMap;
-}
-
-interface ChipGroupProps {
-  // New format with chips array
-  chips?: ChipItem[];
-  selected?: string;
-  onSelect?: (value: string) => void;
-  // Alternative format with options
-  options?: { label: string; value: string }[];
-  value?: string;
-  onChange?: (value: string) => void;
 }
 
 export function ChipGroup({ 

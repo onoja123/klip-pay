@@ -17,10 +17,9 @@ import { typography, spacing, radii, fonts } from '@/constants/tokens';
 import { Button, Card, Input, CryptoIcon } from '@/components/ui';
 import { useWalletStore } from '@/store/wallet';
 import { useTheme } from '@/context';
+import type { WithdrawMethod } from '@/types/app/withdraw';
 
 const AnimatedView = Animated.View;
-
-type WithdrawMethod = 'bank' | 'card' | 'paypal';
 
 export default function WithdrawScreen() {
   const router = useRouter();

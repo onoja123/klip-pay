@@ -15,21 +15,9 @@ import Animated, {
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/context';
 import { radii, spacing, fonts } from '@/constants/tokens';
-import { ButtonVariant, ButtonSize } from '@/types';
+import type { ButtonProps } from '@/types/components/ui/Button';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-
-interface ButtonProps {
-  children: React.ReactNode;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  onPress?: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-  fullWidth?: boolean;
-  icon?: React.ReactNode;
-  style?: ViewStyle;
-}
 
 export function Button({
   children,

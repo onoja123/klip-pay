@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Asset, Subscription, Transaction, DebitCard, DeFiPosition, Contact } from '@/types';
+import type { WalletState } from '@/types/store/wallet';
 import { 
   mockAssets, 
   mockSubscriptions, 
@@ -9,31 +10,6 @@ import {
   mockContacts,
   getTotalPortfolioValue 
 } from '@/data/mock';
-
-interface WalletState {
-  // Data
-  assets: Asset[];
-  subscriptions: Subscription[];
-  transactions: Transaction[];
-  debitCard: DebitCard | null;
-  defiPositions: DeFiPosition[];
-  contacts: Contact[];
-  
-  // Computed
-  totalBalance: number;
-  
-  // UI State
-  isLoading: boolean;
-  selectedAsset: Asset | null;
-  
-  // Actions
-  setAssets: (assets: Asset[]) => void;
-  setSelectedAsset: (asset: Asset | null) => void;
-  addTransaction: (transaction: Transaction) => void;
-  toggleSubscription: (id: string) => void;
-  setLoading: (loading: boolean) => void;
-  refreshData: () => Promise<void>;
-}
 
 export const useWalletStore = create<WalletState>((set, get) => ({
   // Initial Data

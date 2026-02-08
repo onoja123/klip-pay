@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
   LayoutChangeEvent,
-  LayoutRectangle,
   Modal,
   StyleSheet,
   Text,
@@ -12,20 +11,7 @@ import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/context';
 import { fonts, radii, spacing } from '@/constants/tokens';
-
-interface TabBarTourOverlayProps {
-  visible: boolean;
-  step: number;
-  totalSteps: number;
-  title: string;
-  description: string;
-  rect?: LayoutRectangle | null;
-  screenWidth: number;
-  screenHeight: number;
-  onNext: () => void;
-  onSkip: () => void;
-  isLast: boolean;
-}
+import type { TabBarTourOverlayProps } from '@/types/components/features/TabBarTourOverlay';
 
 export function TabBarTourOverlay({
   visible,

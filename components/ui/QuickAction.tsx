@@ -9,14 +9,9 @@ import Animated, {
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/context';
 import { radii, spacing, fonts } from '@/constants/tokens';
+import type { QuickActionProps, QuickActionsRowProps } from '@/types/components/ui/QuickAction';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-
-interface QuickActionProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  onPress: () => void;
-}
 
 export function QuickAction({ icon, label, onPress }: QuickActionProps) {
   const { colors } = useTheme();
@@ -53,10 +48,6 @@ export function QuickAction({ icon, label, onPress }: QuickActionProps) {
       <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
     </AnimatedTouchable>
   );
-}
-
-interface QuickActionsRowProps {
-  actions: QuickActionProps[];
 }
 
 export function QuickActionsRow({ actions }: QuickActionsRowProps) {

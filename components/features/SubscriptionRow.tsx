@@ -3,12 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { colors, typography, radii, spacing } from '@/constants/tokens';
-import { Subscription } from '@/types';
-
-interface SubscriptionRowProps {
-  subscription: Subscription;
-  onPress?: () => void;
-}
+import type { SubscriptionRowProps } from '@/types/components/features/SubscriptionRow';
 
 export function SubscriptionRow({ subscription, onPress }: SubscriptionRowProps) {
   const handlePress = () => {

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -10,13 +10,7 @@ import Animated, {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/context';
 import { radii } from '@/constants/tokens';
-
-interface SkeletonProps {
-  width?: number | string;
-  height?: number;
-  borderRadius?: number;
-  style?: ViewStyle;
-}
+import type { SkeletonProps, SkeletonGroupProps } from '@/types/components/ui/Skeleton';
 
 export function Skeleton({
   width = '100%',
@@ -72,12 +66,6 @@ export function Skeleton({
       </Animated.View>
     </View>
   );
-}
-
-interface SkeletonGroupProps {
-  count?: number;
-  gap?: number;
-  children?: React.ReactNode;
 }
 
 export function SkeletonGroup({ count = 3, gap = 12, children }: SkeletonGroupProps) {

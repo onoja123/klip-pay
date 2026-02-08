@@ -8,17 +8,9 @@ import Animated, {
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/context';
 import { radii, spacing, shadows } from '@/constants/tokens';
-import { CardVariant } from '@/types';
+import type { CardProps } from '@/types/components/ui/Card';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-
-interface CardProps {
-  children: React.ReactNode;
-  variant?: CardVariant;
-  onPress?: () => void;
-  style?: ViewStyle;
-  padding?: keyof typeof spacing;
-}
 
 export function Card({
   children,

@@ -3,15 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/context';
 import { radii, spacing, fonts } from '@/constants/tokens';
-import { BannerVariant } from '@/types';
-
-interface BannerProps {
-  variant?: BannerVariant;
-  title?: string;
-  message: string;
-  icon?: keyof typeof Ionicons.glyphMap;
-  action?: React.ReactNode;
-}
+import type { BannerProps } from '@/types/components/ui/Banner';
 
 export function Banner({
   variant = 'info',

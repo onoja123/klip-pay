@@ -32,6 +32,7 @@ import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/context';
 import { spacing, radii, fonts } from '@/constants/tokens';
 import { useWalletStore } from '@/store/wallet';
+import type { OnboardingStep } from '@/types/app/onboarding';
 import {
   WelcomeIllustration,
   ImportWalletIllustration,
@@ -41,8 +42,6 @@ import {
 } from '@/components/illustrations';
 
 const { width, height } = Dimensions.get('window');
-
-type OnboardingStep = 'welcome' | 'import' | 'currencies' | 'notifications' | 'complete';
 
 const CRYPTO_OPTIONS = [
   { id: 'sol', name: 'Solana', symbol: 'SOL', color: '#9945FF' },
